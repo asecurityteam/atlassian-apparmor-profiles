@@ -1,0 +1,65 @@
+# vim:syntax=apparmor
+#include <tunables/global>
+
+@{APP_NAME}=confluence
+
+profile confluence flags=(complain) {
+    #include <abstractions/base>
+    #include <abstractions/private-files>
+    #include <abstractions/nameservice>
+
+#   network tcp,
+#   network udp,
+#   network inet stream,
+#   network inet6 stream,
+
+    /bin/dash ix,
+    /bin/date ix,
+    /bin/sleep ix,
+    /bin/uname ix,
+    /bin/which ix,
+    /usr/bin/dirname ix,
+    /usr/bin/test ix,
+    /usr/bin/which ix,
+
+    /opt/atlassian/inst/@{APP_NAME}/start_@{APP_NAME}.sh rix,
+    /opt/atlassian/inst/@{APP_NAME}/stop_@{APP_NAME}.sh rix,
+
+    /opt/atlassian/inst/@{APP_NAME}/bin/*.sh rix,
+
+    /opt/atlassian/inst/@{APP_NAME}/apache-tomcat/bin/* rix,
+
+    /usr/lib/jvm/java-8-oracle/** rcix -> java,
+    /usr/bin/java rcix -> java,
+
+    profile java flags=(complain) {
+        #include <abstractions/atlassian/java>
+        #include <abstractions/base>
+        #include <abstractions/private-files>
+        #include <abstractions/nameservice>
+
+        network tcp,
+        network udp,
+        network inet stream,
+        network inet6 stream,
+
+        /opt/atlassian/inst/@{APP_NAME}/*/WEB-INF/lib/** r,
+        /opt/atlassian/inst/@{APP_NAME}/WEB-INF/lib/** r,
+
+        # data dir
+        /opt/atlassian/data/@{APP_NAME}/** rwk,
+
+        # temp dir
+        /opt/atlassian/inst/@{APP_NAME}/temp r,
+        /opt/atlassian/inst/@{APP_NAME}/temp/** rwk,
+
+        # logs dir
+        /opt/atlassian/inst/@{APP_NAME}/logs/** rwk,
+
+        # webapp
+        /opt/atlassian/inst/@{APP_NAME}/** r,
+
+    }
+
+}
+
