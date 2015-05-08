@@ -1,5 +1,3 @@
-
-cat /etc/apparmor.d/crowd
 # vim:syntax=apparmor
 #include <tunables/global>
 
@@ -9,11 +7,6 @@ profile crowd flags=(complain) {
     #include <abstractions/base>
     #include <abstractions/private-files>
     #include <abstractions/nameservice>
-
-#   network tcp,
-#   network udp,
-#   network inet stream,
-#   network inet6 stream,
 
     /bin/dash ix,
     /bin/date ix,
@@ -31,19 +24,12 @@ profile crowd flags=(complain) {
 
     /opt/atlassian/inst/@{APP_NAME}/apache-tomcat/bin/* rix,
 
-    /usr/lib/jvm/java-8-oracle/** rcix -> java,
+    /usr/lib/jvm/java-*/jre/bin/java rcix -> java,
     /usr/bin/java rcix -> java,
 
     profile java flags=(complain) {
         #include <abstractions/atlassian/java>
-        #include <abstractions/base>
         #include <abstractions/private-files>
-        #include <abstractions/nameservice>
-
-        network tcp,
-        network udp,
-        network inet stream,
-        network inet6 stream,
 
         /opt/atlassian/inst/@{APP_NAME}/*/WEB-INF/lib/** r,
         /opt/atlassian/inst/@{APP_NAME}/WEB-INF/lib/** r,
@@ -67,7 +53,6 @@ profile crowd flags=(complain) {
 
         # webapp
         /opt/atlassian/inst/@{APP_NAME}/** r,
-
     }
 
 }
