@@ -6,6 +6,8 @@
     #include <abstractions/user-tmp>
     #include <abstractions/private-files-strict>
 
+    network tcp,
+    network udp,
     network inet stream,
     network inet6 stream,
     @{PROC}/@{pid}/net/if_inet6 r,
